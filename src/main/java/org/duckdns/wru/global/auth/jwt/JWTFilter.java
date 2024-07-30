@@ -25,17 +25,29 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        if (isPublicPath(request.getRequestURI())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // 헤더에서 access키에 담긴 토큰을 꺼냄
         String accessToken = request.getHeader("Authorization");
         System.out.println("accessToken = " + accessToken);
 
-        // 토큰이 없다면 다음 필터로 넘김
-        if (accessToken == null) {
-
-            filterChain.doFilter(request, response);
-            System.out.println("다음 필터 어디로 넘기는거냐고");
+//        // 토큰이 없다면 다음 필터로 넘김
+//        if (accessToken == null) {
+//
+//            filterChain.doFilter(request, response);
+//            System.out.println("다음 필터 어디로 넘기는거냐고");
+//            return;
+//        }
+        // 액세스 토큰이 없는 경우
+        if (accessToken == null || accessToken.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Access token is missing");
             return;
         }
+
 
         // 토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
         try {
@@ -83,5 +95,9 @@ public class JWTFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isPublicPath(String uri) {
+        return uri.equals("/api/login") || uri.equals("/api/v1/auth") || uri.equals("/api/v1/auth/join") || uri.equals("/api/refreshToken");
     }
 }
