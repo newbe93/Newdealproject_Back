@@ -98,6 +98,6 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     private boolean isPublicPath(String uri) {
-        return uri.equals("/api/login") || uri.equals("/api/v1/auth") || uri.equals("/api/v1/auth/join") || uri.equals("/api/refreshToken");
+        return uri.equals("/api/login") || uri.equals("/api/v1/auth") || uri.equals("/api/v1/auth/join") || uri.equals("/api/v1/auth/isExist") || uri.equals("/api/refreshToken");
     }
 }
