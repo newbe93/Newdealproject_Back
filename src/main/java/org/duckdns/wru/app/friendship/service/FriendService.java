@@ -1,6 +1,7 @@
 package org.duckdns.wru.app.friendship.service;
 
 import org.duckdns.wru.app.friendship.domain.Friendship;
+import org.duckdns.wru.app.friendship.dto.FriendResponse;
 import org.duckdns.wru.app.friendship.exception.AlreadyFriendsException;
 import org.duckdns.wru.app.friendship.repository.FriendRepository;
 import org.duckdns.wru.app.user.domain.User;
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -59,5 +61,13 @@ public class FriendService {
         }
 
 
+    }
+
+    public List<FriendResponse> getFriends() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        Long userId = userDetails.getUserId();
+
+        return friendRepository.findFriendsByUserId(userId);
     }
 }
