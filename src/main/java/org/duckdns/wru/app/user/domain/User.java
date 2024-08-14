@@ -1,15 +1,18 @@
 package org.duckdns.wru.app.user.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.duckdns.wru.app.userLocation.domain.UserLocation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class User {
@@ -22,6 +25,9 @@ public class User {
     private String password;
 
     private String role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserLocation> locations = new ArrayList<>();
 
     public User(String username, String role) {
         this.username = username;
@@ -38,5 +44,15 @@ public class User {
         this.username = username;
         this.role = role;
         this.id = id;
+    }
+
+    public void addLocation(UserLocation location) {
+        locations.add(location);
+        location.setUser(this);
+    }
+
+    public void removeLocation(UserLocation location) {
+        locations.remove(location);
+        location.setUser(null);
     }
 }
