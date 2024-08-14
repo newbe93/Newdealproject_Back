@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -61,7 +62,7 @@ public class SecurityConfig {
 
                         CorsConfiguration configuration = new CorsConfiguration();
 
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://wru.duckdns.org"));
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -91,7 +92,7 @@ public class SecurityConfig {
         // 경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/login", "/api/v1/auth", "/api/v1/auth/join", "/").permitAll()
+                        .requestMatchers("/api/login", "/api/v1/auth", "/api/v1/auth/join","/api/v1/auth/isExist", "/").permitAll()
                         .requestMatchers("/admin" ).hasRole("ADMIN" )
                         .requestMatchers("/api/refreshToken").permitAll()
                         .anyRequest().authenticated());
