@@ -2,6 +2,7 @@ package org.duckdns.wru.global.error.handler;
 
 import org.apache.coyote.Response;
 import org.duckdns.wru.app.friendship.exception.AlreadyFriendsException;
+import org.duckdns.wru.app.user.exception.UserNotFoundException;
 import org.duckdns.wru.global.auth.exception.DuplicateDataException;
 import org.duckdns.wru.global.common.dto.ApiResponse;
 import org.duckdns.wru.global.error.exception.BusinessException;
@@ -37,6 +38,15 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleUserNotFoundException(Exception exception) {
+        ApiResponse<Void> response = ApiResponse.error(
+                new BusinessException(exception.getMessage(), "USER_NOT_FOUND")
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
 }
