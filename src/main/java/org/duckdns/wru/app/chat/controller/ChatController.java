@@ -33,4 +33,10 @@ public class ChatController {
         List<ChatRoomResponse> chatRooms =  chatService.getChatRoom();
         return ResponseEntity.ok(ApiResponse.success(chatRooms));
     }
+
+    @GetMapping("/{chatRoomId}")
+    public ResponseEntity<ApiResponse<ChatRoomResponse>> getChatRoom(@PathVariable(value = "chatRoomId") Long chatRoomId) {
+        ChatRoomResponse chatRoom =  chatService.getChatRoomDetail(chatRoomId);
+        return ResponseEntity.ok(ApiResponse.success(chatRoom));
+    }
 }

@@ -23,4 +23,9 @@ public interface ChatMembershipRepository extends CrudRepository<ChatMembership,
             "FROM ChatMembership cm " +
             "WHERE cm.chatRoom.id IN (SELECT cm2.chatRoom.id FROM ChatMembership cm2 WHERE cm2.user.id = :userId)")
     List<ChatRoomMemberDTO> findChatRoomsAndMembersByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT new org.duckdns.wru.app.chat.dto.ChatRoomMemberDTO(cm.chatRoom.id, cm.chatRoom.name, cm.user.id, cm.user.username) " +
+            "FROM ChatMembership cm " +
+            "WHERE cm.chatRoom.id = :chatRoomId")
+    List<ChatRoomMemberDTO> findChatRoomAndMembersByChatRoomId(Long chatRoomId);
 }

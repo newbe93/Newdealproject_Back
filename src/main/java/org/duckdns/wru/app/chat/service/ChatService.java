@@ -90,4 +90,27 @@ public class ChatService {
 
         return new ArrayList<>(chatRoomMap.values());
     }
+
+    public ChatRoomResponse getChatRoomDetail(Long chatRoomId) {
+        List<ChatRoomMemberDTO> chatRoomMembers = chatMembershipRepository.findChatRoomAndMembersByChatRoomId(chatRoomId);
+
+        if (chatRoomMembers.isEmpty()) {
+            throw new RuntimeException("Chat room not found or has no members");
+        }
+        // 첫 번째 멤버의 정보로 ChatRoomResponse 초기화
+        ChatRoomMemberDTO firstMember = chatRoomMembers.get(0);
+        ChatRoomResponse chatRoomResponse = new ChatRoomResponse(
+                firstMember.getChatRoomId(),
+                firstMember.getChatRoomName(),
+                new ArrayList<>()
+        );
+
+        // 모든 멤버를 순회하며 UserDTO 생성 및 추가
+        for (ChatRoomMemberDTO member : chatRoomMembers) {
+            UserDTO userDTO = new UserDTO(member.getUserId(), member.getUsername());
+            chatRoomResponse.addMember(userDTO);
+        }
+
+        return chatRoomResponse;
+    }
 }
